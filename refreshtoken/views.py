@@ -3,7 +3,6 @@ from datetime import datetime
 
 from django.utils.translation import ugettext as _
 from rest_framework import exceptions, generics, status, viewsets
-from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
@@ -11,8 +10,13 @@ from functools import partial
 
 from .models import RefreshToken
 from .serializers import DelegateJSONWebTokenSerializer, RefreshTokenSerializer
+try:
+    from rest_framework.decorators import detail_route
+except:
+    from rest_framework.decorators import action
+    from functools import partial
+    detail_route = partial(action, detail=True)
 
-detail_route = partial(action, detail=True)
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 jwt_response_payload_handler = api_settings.JWT_RESPONSE_PAYLOAD_HANDLER
